@@ -1,0 +1,17 @@
+{
+  "name": "pluralsight-editors-express-mongo",
+  "version": "1.0.0",
+  "description": "A tutorial from Using MongoDB with Node.js on pluralsight by Jonathan Mills ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "nodemon server.js"
+  },
+  "author": "tzirtzi@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.5.9",
+    "nodemon": "^2.0.4"
+  }
+}
