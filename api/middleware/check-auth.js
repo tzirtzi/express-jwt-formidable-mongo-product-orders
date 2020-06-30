@@ -16,7 +16,19 @@ module.exports = (req, res, next) => {
 // To use it in a route import in module
 // and add it as first middleware in route definition ie:
 /* 
+
+1st USE *******************
 const checkAuth = require('../middleware/check-auth');
 ...
 router.post("/blabla", checkAuth, ... , (req, res, next) => { .. });
+
+
+2nd USE *******************
+router.post("/blabla", checkAuth, ... , (req, res, next) => {
+    const { role } = req.user;
+
+    if (role !== 'admin') {
+        return res.sendStatus(403);
+    }
+    .....
 */
