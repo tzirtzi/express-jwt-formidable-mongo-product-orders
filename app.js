@@ -1,83 +1,62 @@
 const path = require('path');
 const express = require('express');
-const app = express();
+const logger = require('morgan');
+
 const mongoose = require('mongoose');
 
-//const morgan = require('morgan');    // logging support
+// middleware import
+const cors = require('./api/middleware/cors');
+const corsOptions = require('./api/middleware/corsOptions');
+const notFound = require('./api/middleware/notFound');
+const errorHandling = require('./api/middleware/errorHandling');
+const authGuard = require('./api/middleware/authGuard');
+
+// routes import
+const statusRoute = require('./api/routes/status');
+const uploadFormRoute = require('./api/routes/uploadForm');
+const uploadRoute = require('./api/routes/upload');
 
 const userRoutes = require('./api/routes/user');
-const protectedStatusRoutes = require('./api/routes/status-protected');
+
+// Initializations
+// Express framework 
+const app = express();
+// DB Connection
+const mongooseConnect = require('./api/data/mongooseConnect')(mongoose);
 
 // Middleware **********************************************************
-
-//app.use(morgan('dev'));              // logging support
-
-// request body parsing
-app.use(express.json());               
-
-// Make public the folder for access from external url
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use('/public/images', express.static(path.join(__dirname, 'public/images')) ); 
 
 // Fix CORS headers, needed to allow access to SPAs / UIs 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", process.env.ALLOW_ORIGIN || "*");
-    res.header("Access-Control-Allow-Headers", process.env.ALLOW_HEADERS || "*" );
+app.use(cors);
 
-    next();
-});
+
+// Preflight request options
+app.options(corsOptions);
 
 
 // Routes **************************************************************
 
-// Health endpoint
-app.get('/status', (req, res, next) => {
-    res.status(200).send('ok');
-});
+// Routing *************************************************************
 
-// Preflight request handling here, request is made with the OPTION http method
-app.options( (req, res, next)=> {
-    res.header('Access-Control-Allow-Methods', process.env.ALLOW_METHODS || 'PUT, POST, PATCH, DELETE, GET');
-    return res.status(200).json({});
-});
+app.use('/protected', authGuard, statusRoute );  // Protected Health endpoint
+app.use('/', statusRoute);   // Public Health endpoint
+app.use('/api/uploadform', uploadFormRoute);
+app.use('/api/upload', uploadRoute);
 
-
-// Import routes *******************************************************
 app.use('/api/user', userRoutes);
-app.use('/api/status', protectedStatusRoutes);
-
 
 
 // Middleware again for error handling and 404 *************************
 
-// Not found -- It needs to run after all routes mapping, 
-// it means will catch whatever not matched with above routes
-app.use( (req, res, next) => {
-    let error = new Error('404 Requested resource not found');
-    error.status = 404;
-    next(error);
-});
+// Not Found
+app.use(notFound);
 
-// Error Handling for all errors
-app.use( (error, req, res, next) => { 
-    res.status( error.status || 500 );
-    //customize you error result here:
-    res.json({
-        error: { message: error.message }
-    });
-});
-
-
-// DB connection
-const uri = /*process.env.DB_CONNECTION ||*/ 'mongodb://root:secret@localhost:27017'; 
-mongoose.Promise = global.Promise;
-mongoose.connect( 
-    uri, 
-    { useNewUrlParser: true, useUnifiedTopology: true }
-).then( () => { 
-    console.log('Connected to mongodb!'); 
-}).catch( err => {
-    console.log('Error connecting database', err);
-});
+// Error handling for all application errors
+app.use(errorHandling);
 
 
 module.exports = app;
