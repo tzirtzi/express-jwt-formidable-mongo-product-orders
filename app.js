@@ -17,6 +17,9 @@ const uploadFormRoute = require('./api/routes/uploadForm');
 const uploadRoute = require('./api/routes/upload');
 
 const userRoutes = require('./api/routes/user');
+const productRoutes = require("./api/routes/products");
+const orderRoutes = require("./api/routes/orders");
+
 
 // Initializations
 // Express framework 
@@ -28,7 +31,7 @@ const mongooseConnect = require('./api/data/mongooseConnect')(mongoose);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/public/images', express.static(path.join(__dirname, 'public/images')) ); 
+app.use('/public', express.static(path.join(__dirname, 'public')) ); 
 
 // Fix CORS headers, needed to allow access to SPAs / UIs 
 app.use(cors);
@@ -48,7 +51,8 @@ app.use('/api/uploadform', uploadFormRoute);
 app.use('/api/upload', uploadRoute);
 
 app.use('/api/user', userRoutes);
-
+app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
 
 // Middleware again for error handling and 404 *************************
 

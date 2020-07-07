@@ -21,9 +21,12 @@ module.exports = (req, res, next) => {
             next(err);
             return;
         }
+        
         //return uploaded File and fields data in request in the next function
-        req.uploadData = {fields: fields, files: files};
-
+        //req.uploadData = {fields: fields, files: files};
+        req.file = files
+        req.body = fields;
+        
         next();
     });
   }
