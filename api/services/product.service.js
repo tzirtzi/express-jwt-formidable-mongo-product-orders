@@ -151,9 +151,10 @@ async function deleteProduct(req, res, next) {
         });
 }
 
-
-module.exports.getProducts = getProducts;
-module.exports.getProduct = getProduct;
-module.exports.postProduct = postProduct;
-module.exports.updateProduct = updateProduct;
-module.exports.deleteProduct = deleteProduct;
+module.exports = {
+    getProducts,
+    getProduct,
+    postProduct,
+    updateProduct,
+    deleteProduct
+}

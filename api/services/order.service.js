@@ -122,7 +122,9 @@ async function deleteOrder(req, res, next) {
 }
 
 
-module.exports.getOrders = getOrders;
-module.exports.getOrders = getOrder;
-module.exports.postOrder = postOrder;
-module.exports.postOrder = deleteOrder; 
+module.exports = {
+  getOrders,
+  getOrder,
+  postOrder,
+  deleteOrder
+}
