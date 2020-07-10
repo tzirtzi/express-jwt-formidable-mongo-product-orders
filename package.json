@@ -1,10 +1,11 @@
 {
   "name": "tzirtzi-express-jwt-formidable-mongo",
   "version": "1.1.0",
-  "description": "A tutorial from Using MongoDB with Node.js on pluralsight by Jonathan Mills ",
+  "description": "Express using MongoDB with JWT security and file upload with formidable and multer",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./bin/www"
+    "start:dev": "nodemon ./bin/www",
+    "start": "node ./bin/www"
   },
   "author": "tzirtzi@gmail.com",
   "license": "ISC",
